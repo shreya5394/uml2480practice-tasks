@@ -1,6 +1,42 @@
 <h3>Math Functions</h3>
-Exercise: Using the function in the main article as a model, write a function that will multiply two numbers together. Call the function and pass in several different combination of numbers (i.e. <code>#addNumbers(5,3)# &lt;br/> #addNumbers(100,223)# </code> etc.)
-
+Exercise: Using the function in the main article as a model, write a function that will 
+multiply two numbers together. Call the function and pass in several different combination 
+of numbers (i.e. <code>#multiplyNumbers(5,3)# &lt;br/> #multiplyNumbers(100,223)# </code> etc.)
+</br>
+<bx:function name="multiplyNumbers" access="private" returntype="numeric">
+    <bx:argument name="firstnum" type="numeric">
+    <bx:argument name="secondnum" type="numeric">
+    <bx:return #firstnum*secondnum#>
+</bx:function> 
+</br>
+<bx:output>Multiplication of 10 & 5 = #multiplyNumbers(10,5)#</bx:output></br>
+<bx:output>Multiplication of 10 & 0 = #multiplyNumbers(10,0)#</bx:output></br>
+<bx:output>Multiplication of 10 & 1 = #multiplyNumbers(10,1)#</bx:output></br>
 
 <hr />
-Exercise: Can you make a form that accepts two numbers, submits it to the same page and then uses the function to add the two numbers together? All the information you need is in these docs.
+Exercise: Can you make a form that accepts two numbers, submits it to the same page 
+and then uses the function to add the two numbers together? All the information you need is in these docs.
+
+<bx:dump var="#form#"/>
+
+<bx:output>
+    <form action="#cgi.script_name#?p=#p#" method="post">
+        <div class="mb-3">
+            <label for="first" class="form-label">First</label>
+            <input type="number" class="form-control" id="firstName" name="first">
+        </div>
+        
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Second</label>
+            <input type="number" class="form-control" id="second" name="second">
+        </div>
+
+        <div>
+            <button class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</br>
+    <bx:if form.keyExists("first")>
+    #form.first# * #form.second# = #multiplyNumbers(form.first,form.second)#
+    </bx:if>    
+</bx:output>

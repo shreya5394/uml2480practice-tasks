@@ -1,4 +1,11 @@
-<form>
+<bx:if form.keyExists("title")>
+    <bx:dump var="#form#" />
+    <bx:param name="form.active" default="0" />
+    <bx:set common = createObject("bookstore.common.articles") />
+    <bx:set common.saveArticle(form.title, form.body, form.active) />
+</bx:if>
+<bx:output>
+<form action="#cgi.script_name#" method="POST">
     <div class="row mb-3">
       <div class="col-12">
         <label for="title" class="form-label">Title:</label>
@@ -28,4 +35,5 @@
       </div>
     </div>
   </form>
+</bx:output>
   

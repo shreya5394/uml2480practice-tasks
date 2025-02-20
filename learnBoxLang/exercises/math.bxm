@@ -1,2 +1,15 @@
-<p><strong>Exercise:</strong>Make an ordered list ( using the ol and li tags ). For each item, output a math problem using 
-    each operator least once and two numbers between 1 and 9 ( i.e. 1+9=????? ).</p>
+<p><strong>Exercise:</strong>Make an ordered list (using the ol and li tags). 
+For each item, output a math problem using each operator least once and
+two numbers between 1 and 9 ( i.e. 1+9=????? ).</p>
+
+    <bx:output>
+    <ol>
+        <li>1+9 = #1+9#</li>
+        <li>1-9 = #1-9#</li>
+        <li>1*9 = #1*9#</li>
+        <li>1/9 = #1/9#</li>
+        <li>1 mod 9 = #1 mod 9#</li>
+        <li>1 ^ 9 = #NumberFormat(1 ^ 9, ",")#</li>
+    </ol>
+</bx:output>
+    

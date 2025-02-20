@@ -19,7 +19,7 @@
                 }
             },
             "datasources" : {
-                "**DSOURCENAME**":{
+                "Shreya_Mishra":{
                     "database":"${PDBNAME}",
                     "driver":"mysql",
                     "host":"${PHOST}",

@@ -1,7 +1,45 @@
 <h3>My Array</h3>
-<p id="a07e67e4-5a02-4b59-ae4c-1c6ef8035771" class=""><strong>Exercise</strong>: Create some objects using the same model
-    you created on the MyObjects page. Populate three more of them with three more books from the 10 Books Exercise. Put each of the objects in its
-    own index in an Array and dump it out. Are you starting to see how an array of objects can be a powerful
-    thing? If not, no stress but stay tuned. I know that this exercise is repetitive. In a few screens we are
+<p id="a07e67e4-5a02-4b59-ae4c-1c6ef8035771" class="">
+    <strong>Exercise</strong>: Create some objects using the same model
+    you created on the MyObjects page. Populate three more of them with three more books from the 
+    10 Books Exercise. Put each of the objects in its own index in an Array and dump it out. 
+    Are you starting to see how an array of objects can be a powerful thing? 
+    If not, no stress but stay tuned. I know that this exercise is repetitive. In a few screens we are
     going to see how we can make the computer create the objects and arrays we want more easily and
-    automatically. For now though, just type it out.</p>
+    automatically. For now though, just type it out.
+</p>
+
+<bx:set book1={
+    "title"="Weirdos From Another Planet",
+    "numPages"=128,
+    "Author"={
+        "firstname"="Bill",
+        "lastname"="Waterson"
+    }
+}/>
+
+<bx:set book2={
+    "title"="Romeo and Juliet",
+    "numPages"=140,
+    "Author"={
+        "firstname"="William",
+        "lastname"="Shakespeare"
+    }
+}/>
+
+<bx:set book3={
+    "title"="The Prophet",
+    "numPages"=200,
+    "Author"={
+        "firstname"="Kahlil",
+        "lastname"="Gibran"
+    }
+}/>
+
+<bx:set myArray=[
+    book1,
+    book2,
+    book3
+]/>
+
+<bx:dump var="#myArray#"/>

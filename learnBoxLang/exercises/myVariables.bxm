@@ -1,16 +1,36 @@
 <h3>My Variables</h3>
-<p id="a631de6b-7ec5-4bc0-a120-1d24205ecc0b" class=""><strong>Exercise:</strong> Create a new variable named <code>todayDate</code> and set it
-    today's date. </p>
+
+<p id="a631de6b-7ec5-4bc0-a120-1d24205ecc0b">
+    <strong>Exercise:</strong> Create a new variable named <code>todayDate</code> and set it to today’s date.
+</p>
+<bx:set todayDate = now() />
+<bx:dump var="#todayDate#" />
 
 <hr/>
 
-<p id="b0b17cfe-e668-4793-b3e9-00e27a9325fa" class=""><strong>Exercise</strong>: Format the output for todayDate to be more 
-    human-readable version of the todayDate variable BUT don&#x27;t change the underlying variable.</p>
+<p id="b0b17cfe-e668-4793-b3e9-00e27a9325fa">
+    <strong>Exercise:</strong> Format the output for <code>todayDate</code> to be a more 
+    human-readable version, but don’t change the underlying variable.
+</p>
+<bx:dump var="#dateFormat(todayDate, 'yyyy-MM-dd')#" />
 
-    <hr/>
+<hr/>
 
+<p id="fdd75171-c4ef-49e8-af90-0149b2170f0f">
+    <strong>Exercise:</strong> Below, add up the price of your 10 books in your Excel Project. 
+    Can you do it with only one variable name? Let’s call it <code>totalBookCost</code>. 
+    Hint: Start with <code>&lt;bx:set totalBookCost=0&gt;</code> and go from there. 
+    Don’t forget to output the final amount to the page.
+</p>  
 
-    <p id="fdd75171-c4ef-49e8-af90-0149b2170f0f" class=""><strong>Exercise</strong>: Below, add up the price of your 10 books in
-        your Excel Project. Can you do it with only one variable name? Let&#x27;s call it <code>totalBookCost</code>. Hint: Start
-        with <code>&lt;bx:set totalBookCost=0&gt;</code> and go from there. Think you can do it? Don&#x27;t forget to output the
-        final amount to the page.</p>    
+<!-- Book Prices: 2, 5, 8, 2, 1 -->
+<bx:set totalBookCost=0 />
+<bx:set totalBookCost=totalBookCost + 2 />
+<bx:set totalBookCost=totalBookCost + 5 />
+<bx:set totalBookCost=totalBookCost + 8 />
+<bx:set totalBookCost=totalBookCost + 2 />
+<bx:set totalBookCost=totalBookCost + 1 />
+
+<bx:output>
+    My Books cost: #numberFormat(totalBookCost, "$__,__.00")#
+</bx:output>

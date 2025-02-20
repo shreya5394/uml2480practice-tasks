@@ -1,4 +1,31 @@
 <h1>My Objects</h1>
-<p>take one of your 10 Books in Excel books and create a BoxLang structure out of it's metadata. 
-    Use multiple structures to model as much of the metadata as you can including data from all four Excel Sheets 
-    (or SQL Tables). When you are done, dump out each of the objects you created.</p>
+
+<p>Take one of your 10 books in Excel and create a 
+    BoxLang structure out of its metadata. 
+    Use multiple structures to model as much metadata 
+    as you can, including data from all four Excel Sheets 
+    (or SQL Tables). When you are done, dump out each of the 
+    objects you created.</p>
+
+<bx:set myBook = {
+    "title": "Weirdos From Another Planet",
+    "numPages": 128,
+    "Author": {
+        "firstname": "Bill",
+        "lastname": "Watterson"
+    },
+    "publisher": "Andrews McMeel Publishing",
+    "ISBN": "978-0836218251",
+    "price": 12.99,
+    "genre": "Comics"
+} />
+
+<bx:dump var="#myBook#" />
+
+<bx:output>
+    I know #myBook.len()# pieces of information about my book. These are the keys: #myBook.keylist()# </br>
+    The book <strong>#myBook.title#</strong> has <strong>#myBook.numPages#</strong> pages and is written
+    by <strong>#myBook.Author.firstname# #myBook.Author.lastname#</strong>. </br>
+    It belongs to the <strong>#myBook.genre#</strong> genre and was published by <strong>#myBook.publisher#</strong>. </br>
+    The ISBN is <strong>#myBook.ISBN#</strong> and it costs <strong>$#numberFormat(myBook.price, '__.__')#</strong>.
+</bx:output>

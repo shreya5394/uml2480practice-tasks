@@ -36,6 +36,19 @@
     }
 }/>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 <bx:set myArray=[
     book1,
     book2,

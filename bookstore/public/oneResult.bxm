@@ -1,0 +1,6 @@
+<bx:output>
+        <div>Title: #bookInfo.title[1]#</div>
+        <div>Publisher: #bookInfo.publisherid[1]#</div>
+        <div>Year: #bookInfo.year[1]#</div>
+        <div>Weight: #bookInfo.weight[1]#</div>
+</bx:output>

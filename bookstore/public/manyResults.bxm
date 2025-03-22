@@ -1,0 +1,11 @@
+<bx:output>
+        <ol class="nav flex-column">
+            <bx:output query="bookInfo">
+                <li class="nav-item">
+                    <a class="nav-link" href="#cgi.script_name#?t=details&searchTerm=#trim(isbn13)#">
+                        #trim(title)#
+                    </a>
+                </li>
+            </bx:output>
+        </ol>
+    </bx:output>

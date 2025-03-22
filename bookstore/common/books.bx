@@ -1,0 +1,28 @@
+class {
+    public void function saveBooks(required string title, required string isbn13, required string isbn, required year, required weight, required pages, numeric id=0) {
+        queryExecute("
+            INSERT INTO books (title, isbn13, isbn, year, weight, pages) 
+            VALUES (:title, :isbn13, :isbn, :year, :weight, :pages)
+            ON DUPLICATE KEY UPDATE title=:title, isbn13=:isbn13, isbn=:isbn, year=:year, weight=:weight, pages=:pages",
+            {title: arguments.title, isbn13: arguments.isbn13, isbn: arguments.isbn, year: arguments.year, weight: arguments.weight, pages: arguments.pages }
+        );
+    }
+
+    public query function searchBooks(string title="", string isbn13="") {
+        var sql = "SELECT * FROM books";
+        var params = {};
+        if (len(title) || len(isbn13)) {
+            sql &= " WHERE ";
+            if (len(title)) {
+                sql &= "title LIKE :title";
+                params["title"] = "%" & arguments.title & "%";
+            }
+            if (len(isbn13)) {
+                if (structCount(params)) sql &= " AND ";
+                sql &= "isbn13 = :isbn13";
+                params["isbn13"] = arguments.isbn13;
+            }
+        }
+        return queryExecute(sql, params);
+    }
+}

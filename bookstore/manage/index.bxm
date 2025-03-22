@@ -7,16 +7,19 @@
           integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link href="../includes/css/class.css" rel="stylesheet"/>
     <link href="../includes/css/mycss.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/44.3.0/ckeditor5.css" />
+    <script src="https://cdn.ckeditor.com/ckeditor5/44.3.0/ckeditor5.umd.js"></script>
 </head>
 
 <body>
+<bx:param name="t" default="manageArticles" />
 <div id="wrapper" class="container">
     <bx:include template="../public/header.bxm"/>
     <div id="horizontalnav" class="row">
-        <bx:include template="./horizontalNav.bxm"/>
+        <bx:include template="./hori_nav.bxm"/>
     </div>
     <main id="maincontent" class="row">
-        <bx:include template="../manage/manageArticles.bxm"/>
+        <bx:include template="#t#.bxm"/>
     </main>
     <bx:include template="../public/footer.bxm"/>
 </div>

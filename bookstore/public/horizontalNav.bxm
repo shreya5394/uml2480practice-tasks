@@ -1,5 +1,8 @@
+<bx:set common = createObject("bookstore.common.articles") />
+<bx:set allActiveArticles = common.allArticles(status=1) />
+ 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="/">
                 <img src="../public/images/rdb.png" alt="Read Dees Books Logo"/>
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -12,19 +15,20 @@
                     <li class="nav-item active">
                         <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
                     </li>
+                    <bx:output query="allActiveArticles">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Manage Articles</a>
+                        <a class="nav-link" href="#cgi.script_name#?id=#id#&t=articles">
+                            #title#
+                        </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Highlighted Favorites</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Events</a>
-                    </li>
+                </bx:output>
+    
                 </ul>
-                <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
+                <bx:output>
+                    <form class="d-flex" action="#cgi.SCRIPT_NAME#?t=details" method="post">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="searchTerm">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                </bx:output>
             </div>
         </nav>

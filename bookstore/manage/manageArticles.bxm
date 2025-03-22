@@ -1,39 +1,92 @@
+<bx:param name="id" default="-1" />
+<bx:set common = createObject("bookstore.common.articles") />
+
 <bx:if form.keyExists("title")>
-    <bx:dump var="#form#" />
     <bx:param name="form.active" default="0" />
-    <bx:set common = createObject("bookstore.common.articles") />
-    <bx:set common.saveArticle(form.title, form.body, form.active) />
+    <bx:set common.saveArticle(form.title, form.body, form.active, form.id) />
 </bx:if>
+
+<bx:set allArticles = common.allArticles() />
+
 <bx:output>
-<form action="#cgi.script_name#" method="POST">
-    <div class="row mb-3">
-      <div class="col-12">
-        <label for="title" class="form-label">Title:</label>
-        <input type="text" class="form-control" id="title" name="title" placeholder="Enter your title">
-      </div>
-    </div>
-</br>
-    <div class="row mb-3">
-      <div class="col-12">
-        <label for="body" class="form-label">Body:</label>
-        <textarea class="form-control" id="body" name="body" rows="4" placeholder="Enter your text here"></textarea>
-      </div>
-    </div>
-</br>
-    <div class="row mb-3">
-      <div class="col-12">
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="active" name="active">
-          <label class="form-check-label" for="active">Active</label>
-        </div>
-      </div>
-    </div>
-</br>  
     <div class="row">
-      <div class="col-12">
-        <button type="submit" class="btn btn-primary">Save</button>
+      <div class="col">
+        <ol>
+          <!-- Create a new article -->
+          <li> 
+            <a href="#cgi.script_name#?id=0"> 
+              Create a new Article
+            </a>
+          </li>
+
+          <!-- The articles in the database -->
+          <bx:loop query = "allArticles">
+              <li> 
+                <a href="#cgi.script_name#?id=#id#">
+ 
+                  #title#
+                </a>
+              </li>
+          </bx:loop>
+        </ol>
       </div>
+        <div class="col">
+          <bx:if id gt -1>
+          <bx:set articleDetails = common.articleById( id ) />
+            
+            <form action="#cgi.script_name#" method="POST">
+              <input type="text" name="id" value="#isvalid('numeric',articleDetails.id) ? articleDetails.id : 0#" />
+                <div class="form-floating mb-3">
+                    <input 
+                      type="text" 
+                      class="form-control" 
+                      id="floatingInput" 
+                      placeholder="Title" 
+                      name="title" 
+                      value="#articleDetails.title#">
+                    <label for="floatingInput">Title</label>
+                </div>
+                <div class="form-floating">
+                  <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" name="body">#articleDetails.description#</textarea>
+                    <label for="floatingTextarea">Body</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="1" id="flexCheckDefault" name="active" #articleDetails.status==1? "checked" : ""#>
+                  <label class="form-check-label" for="flexCheckDefault">
+                      "Active"
+                  </label> 
+                </div>
+                <button type="submit" class="btn btn-primary w-100" style="width:100%">Save</button>
+            </form>
+          </bx:if>
+        </div>
     </div>
-  </form>
+
+
+
+
 </bx:output>
-  
+<script type="text/javascript">
+  <![CDATA[
+  const { 
+    ClassicEditor,
+    Essentials,
+    Bold,
+    Italic,
+    Font,
+    Paragraph
+  } = CKEDITOR;
+
+  ClassicEditor
+    .create( document.querySelector( '#floatingTextarea' ), {
+        licenseKey: 'eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3NzI4NDE1OTksImp0aSI6IjUxMWE0ZDdmLWJmOWMtNDM2Ni1iNTEwLTYwMzgxYTZkYWU0MSIsImxpY2Vuc2VkSG9zdHMiOlsiMTI3LjAuMC4xIiwibG9jYWxob3N0IiwiMTkyLjE2OC4qLioiLCIxMC4qLiouKiIsIjE3Mi4qLiouKiIsIioudGVzdCIsIioubG9jYWxob3N0IiwiKi5sb2NhbCJdLCJ1c2FnZUVuZHBvaW50IjoiaHR0cHM6Ly9wcm94eS1ldmVudC5ja2VkaXRvci5jb20iLCJkaXN0cmlidXRpb25DaGFubmVsIjpbImNsb3VkIiwiZHJ1cGFsIl0sImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJmZWF0dXJlcyI6WyJEUlVQIl0sInZjIjoiNjIzOGU0ZjcifQ.WVB5rEYWNC-qmrhTk8hF_tMBbM_gujAQ6gDXjCh-ytRy5HJzJvgLk1fh0insxH_lZzg920fQmKVkj0-dMB4Ltg',
+        plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+        toolbar: [
+            'undo', 'redo', '|', 'bold', 'italic', '|',
+            'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+        ]
+    })
+    .then( /* ... */ )
+    .catch( /* ... */ );
+  ]]>
+</script>

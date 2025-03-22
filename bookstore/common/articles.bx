@@ -1,12 +1,27 @@
 class {
-    function saveArticle( required string title="", required string description="", numeric status=0 ){
+
+    function allArticles(status=-1) {
+        var extra = status > -1 ? " where status=#arguments.status#" :"";
+        return queryExecute("select * from articles #extra#")
+    }
+
+    function articleById( required numeric id) {
+        return queryExecute("select * from articles where id=:id", {id:arguments.id })
+    }
+
+    function saveArticle(required string title="", required string description="", numeric status=0, numeric id=0){
         queryExecute("
-            INSERT IGNORE into articles (title, description, status) 
-            VALUES (:title, :description, :status)
-        ",{
+            INSERT into articles (id, title, description, status) 
+                VALUES (:id, :title, :description, :status)
+                ON DUPLICATE KEY UPDATE title=:title, description=:description, status=:status
+        ", {
+            id:arguments.id,
             title:arguments.title,
             description:arguments.description,
-            status: arguments.status
+            status:arguments.status
         });
     }
+
+
+
 }

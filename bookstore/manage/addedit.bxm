@@ -1,0 +1,78 @@
+<bx:set bookstoreFunctions = createObject("bookstore.common.books")>
+
+<bx:if form.keyExists("title")>
+<bx:set bookstoreFunctions.saveBooks(form.title, form.isbn13, form.isbn, form.year, form.weight, form.pages)/>
+</bx:if>
+
+<div class="row">
+    <div class="col-3">
+        Book list
+    </div>
+    <div class="col-9">
+        <bx:output>Book list
+        <form action="#cgi.script_name#?t=addedit" method="POST">
+              <div class="form-floating mb-3">
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="floatingInput" 
+                    placeholder="Title" 
+                    name="title" 
+                    value="">
+                  <label for="floatingInput">Title</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="floatingInput" 
+                  placeholder="ISBN13" 
+                  name="ISBN13" 
+                  value="">
+                <label for="floatingInput">ISBN13</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="floatingInput" 
+                  placeholder="ISBN" 
+                  name="ISBN" 
+                  value="">
+                <label for="floatingInput">ISBN</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="floatingInput" 
+                  placeholder="year" 
+                  name="year" 
+                  value="">
+                <label for="floatingInput">year</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="floatingInput" 
+                  placeholder="weight" 
+                  name="weight" 
+                  value="">
+                <label for="floatingInput">weight</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="floatingInput" 
+                  placeholder="pages" 
+                  name="pages" 
+                  value="">
+                <label for="floatingInput">pages</label>
+            </div>
+            <button type="submit" class="btn btn-primary w-100" style="width:100%">Save</button>
+            </form>
+        </bx:output>
+    </div>
+</div>

@@ -8,16 +8,20 @@
     <link href="../includes/css/class.css" rel="stylesheet"/>
     <link href="../includes/css/mycss.css" rel="stylesheet"/>
 </head>
-
 <body>
+<bx:param name="t" default="carousel" />
 <div id="wrapper" class="container">
     <bx:include template="header.bxm"/>
     <div id="horizontalnav" class="row">
-        <bx:include template="hori_nav.bxm"/>
+        <bx:include template="horizontalNav.bxm"/>
     </div>
     <main id="maincontent" class="row">
-        <bx:include template="carousel.bxm"/>
-        <bx:include template="genre_nav.bxm"/>
+        <div class = "col-3"> 
+            <bx:include template="genre_nav.bxm"/>
+        </div>
+        <div class = "col-9">
+            <bx:include template="#t#.bxm"/>
+        </div>
     </main>
     <bx:include template="footer.bxm"/>
 </div>

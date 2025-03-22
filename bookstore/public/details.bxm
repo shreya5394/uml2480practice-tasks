@@ -1,0 +1,16 @@
+<bx:output>
+        <bx:dump var="#form#" />
+    </bx:output>
+    <bx:set bookstoreFunctions = createObject("bookstore.common.books") />
+    <bx:param name="searchTerm" default="" />
+    <bx:set bookInfo = bookstoreFunctions.searchBooks(searchTerm) />
+    
+    <bx:output>
+        <bx:if bookInfo.recordcount == 0>
+            <bx:include template="noResults.bxm" />
+        <bx:elseif bookInfo.recordcount == 1>
+            <bx:include template="oneResult.bxm" />
+        <bx:else>
+            <bx:include template="manyResults.bxm" />
+        </bx:if>
+    </bx:output>

@@ -1,8 +1,24 @@
+<bx:param name = "book" default=""/>
 <bx:set bookstoreFunctions = createObject("bookstore.common.books")>
 
-<bx:if form.keyExists("title")>
-<bx:set bookstoreFunctions.saveBooks(form.title, form.isbn13, form.isbn, form.year, form.weight, form.pages)/>
+
+<bx:output> 
+<bx:dump var="#form#"/>
+  <bx:if form.keyExists("isbn13")>
+        <bx:if form.keyExists("uploadimage" && form.uploadimage.len())>
+        <bx:set fileinfo = bookstoreFunctions.uploadFile("uploadimage")/>
+        <bx:dump  var="#fileinfo#"/>
+        <bx:set form.image = fileInfo.serverFileName />
+        </bx:if>
+  <bx:set bookstoreFunctions.saveBooks(form.title, form.isbn13, form.isbn, form.year, form.weight, form.pages, form.image, form.publisher) />
 </bx:if>
+</bx:output>
+
+<bx:set allPublishers = bookstoreFunctions.allPublishers()>
+
+<bx:set allGenres = bookstoreFunctions.allGenres() />
+<bx:set bookGenres = bookstoreFunctions.allGenresForBook(form.isbn13)/>
+
 
 <div class="row">
     <div class="col-3">
@@ -10,8 +26,14 @@
     </div>
     <div class="col-9">
         <bx:output>Book list
-        <form action="#cgi.script_name#?t=addedit" method="POST">
-              <div class="form-floating mb-3">
+        <form action="#cgi.script_name#?tool=addEdit&book=#book#" method="POST" enctype="multipart/form-data" >
+          <input type=”file” name=”uploadimage”>     
+          <input type=”hidden” name=”image” value=”#trim(bookinfo.image[1])#”>
+          <label for="uploadImage">Upload Cover</label>
+          <div class="input-group mb-3">    
+              <input type="file" id="uploadImage" name="uploadimage" class="form-control" />    
+          </div>
+          <div class="form-floating mb-3">
                   <input 
                     type="text" 
                     class="form-control" 
@@ -71,8 +93,71 @@
                   value="">
                 <label for="floatingInput">pages</label>
             </div>
+            <div class="form-floating mb-3">
+              <textarea id="description" name="description" class="form-control">
+                  #bookinfo.description#
+              </textarea>
+          </div>
+
+          <!--- Publisher --->
+          <div class="form-floating mb-3">
+            <select class="form-select" id="publisher" name="publisherId" aria-label="Publisher Select Control">
+                <option></option> <!--- Empty option for clarity --->
+                <bx:loop query="allPublishers">
+                <option value="#id#" #id == bookinfo.publisher ? "selected" : ""#** >#name#</option>
+                </bx:loop>
+            </select>
+            <label for="publisher">Publisher</label>
+        </div>
+
+
+        <div class="form-floating mb-3">
+          <label>Genres</label>
+          <div>
+              <!-- Loop through all genres and create checkboxes -->
+              <bx:loop query="allGenres">
+                  <input id="genre#id#" type="checkbox" name="genre" value="#id#" /> #name#<br/>
+              </bx:loop>
+          </div>
+
+          <bx:loop query="bookGenres">
+            <bx:script>
+                document.getElementById('genre#genreid#').checked = true;
+            </bx:script>
+          </bx:loop>
+      </div>             
             <button type="submit" class="btn btn-primary w-100" style="width:100%">Save</button>
             </form>
         </bx:output>
+
+        <bx:if form.keyExists("image")>
+    <!-- Handle the image upload first -->
+    <bx:set fileInfo = common.uploadFile("uploadImage") />
+    <bx:set form.image = fileInfo.serverFileName />
+    
+    <!-- Handle genre assignment -->
+    <bx:script>
+        if(form.keyExists("genre")){
+            // First, clear existing genres for the book
+            common.clearAllBookGenres(form.isbn13);
+
+            // Convert the list of selected genres into an array and loop through each one
+            form.genre.listToArray().each(function(item){
+                // Save each genre to the book
+                common.saveGenreToBook(item, form.isbn13);
+            });
+        }
+    </bx:script>
+</bx:if>
+
     </div>
 </div>
+
+<script>
+  tinymce.init({
+      selector: '#description',
+      plugins: 'advlist autolink lists link charmap print preview anchor',
+      toolbar: 'bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent',
+      menubar: false
+  });
+</script>

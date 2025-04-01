@@ -1,6 +1,15 @@
 <bx:output>
-        <div>Title: #bookInfo.title[1]#</div>
-        <div>Publisher: #bookInfo.publisherid[1]#</div>
-        <div>Year: #bookInfo.year[1]#</div>
-        <div>Weight: #bookInfo.weight[1]#</div>
-</bx:output>
+<bx:dump var='#bookinfo#'/>   
+<bx:set genre = bookstoreFunctions.getGenresForBook('#bookinfo.isbn13#') />     
+        <div class="book">
+            <h3>#bookinfo.title#</h3>
+            <p>Pages: #bookinfo.pages#</p>
+            <p>Publisher: <a href="#cgi.SCRIPT_NAME#?publisher=#bookinfo.publisherId#">#bookinfo.publisherName#</a></p>
+            
+            <p>Genres: 
+                <bx:output query='genre'>
+                    <a href="#cgi.SCRIPT_NAME#?genre=#genre.id#">#genre.name#</a> 
+                </bx:output>
+            </p>
+        </div>
+</bx:output> 

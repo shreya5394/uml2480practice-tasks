@@ -1,16 +1,26 @@
 <bx:output>
-        <bx:dump var="#form#" />
-    </bx:output>
-    <bx:set bookstoreFunctions = createObject("bookstore.common.books") />
-    <bx:param name="searchTerm" default="" />
-    <bx:set bookInfo = bookstoreFunctions.searchBooks(searchTerm) />
-    
-    <bx:output>
-        <bx:if bookInfo.recordcount == 0>
-            <bx:include template="noResults.bxm" />
-        <bx:elseif bookInfo.recordcount == 1>
-            <bx:include template="oneResult.bxm" />
-        <bx:else>
-            <bx:include template="manyResults.bxm" />
-        </bx:if>
-    </bx:output>
+    <bx:dump var="#form#" />
+</bx:output>
+<bx:set bookstoreFunctions = createObject("bookstore.common.books") />
+<bx:param name="searchTerm" default="" />
+<bx:param name="genreId" default="1" />
+<bx:set bookinfo = bookstoreFunctions.searchBooks(searchTerm, genreId) />
+
+
+
+<bx:output>
+
+    <bx:if bookInfo.recordcount == 0>
+        <bx:include template="noResults.bxm" />
+    <bx:elseif bookInfo.recordcount == 1>
+        <bx:include template="oneResult.bxm" />
+        <div>Description: #bookinfo.description[1]#</div>
+        <div>Image: <img src="/bookstore/common/images/#bookinfo.image#" alt="Book Cover" width="500"></div>
+    <bx:else>
+        <bx:include template="manyResults.bxm" />
+        <img src="/bookstore/common/images/#bookinfo.image#" alt="Book Cover" width="500">
+    </bx:if>
+</bx:output>
+
+
+

@@ -1,6 +1,6 @@
 {
     "app":{
-        "cfengine":"boxlang"
+        "cfengine":"boxlang@1.0.0-snapshot"
     },
     "JVM":{
         "javaVersion":"openjdk21_jdk"

@@ -22,6 +22,16 @@ class {
         });
     }
 
+    function uploadFile(fileField) {
+        return fileUpload(expandPath("/bookstore/common/images/"), "uploadImage", "*", "makeUnique");
+    }    
 
-
+    function allPublishers() {
+        return queryExecute(
+            "SELECT id, name FROM publishers ORDER BY name",
+            [],
+            {datasource = "yourDatasource"}
+        );
+    }
+    
 }

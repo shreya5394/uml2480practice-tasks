@@ -1,28 +1,138 @@
 class {
-    public void function saveBooks(required string title, required string isbn13, required string isbn, required year, required weight, required pages, numeric id=0) {
+    public void function saveBooks(required string title, required string isbn13, required string isbn, required year, required weight, required pages, required image, required publisher, numeric id=0) {
         queryExecute("
-            INSERT INTO books (title, isbn13, isbn, year, weight, pages) 
-            VALUES (:title, :isbn13, :isbn, :year, :weight, :pages)
+            INSERT INTO books (title, isbn13, isbn, year, weight, pages, image, publisher) 
+            VALUES (:title, :isbn13, :isbn, :year, :weight, :pages, :image, :publisher)
             ON DUPLICATE KEY UPDATE title=:title, isbn13=:isbn13, isbn=:isbn, year=:year, weight=:weight, pages=:pages",
-            {title: arguments.title, isbn13: arguments.isbn13, isbn: arguments.isbn, year: arguments.year, weight: arguments.weight, pages: arguments.pages }
+            {title: arguments.title, isbn13: arguments.isbn13, isbn: arguments.isbn, year: arguments.year, weight: arguments.weight, pages: arguments.pages, image: arguments.image, publisher: arguments.publisher}
+            );
+    }    
+
+    public query function searchBooks(string searchTerm="", numeric genreId=0) {
+        var sql = "
+            SELECT b.*, p.name AS publisherName, g.name AS genreName, g.id AS genreId
+            FROM books b
+            INNER JOIN publishers p ON b.publisherId = p.id
+            LEFT JOIN genresToBooks gtb ON b.isbn13 = gtb.isbn13
+            LEFT JOIN genres g ON gtb.genreId = g.id
+        ";
+    
+        var params = {};
+    
+        // If searchTerm is provided, include it in the query.
+        if (arguments.searchTerm.len() > 0) {
+            sql &= " WHERE b.title LIKE :searchTerm 
+                     OR b.isbn13 = :searchTerm 
+                     OR p.id = :searchTerm 
+                     OR p.name LIKE :searchTerm";
+            params.searchTerm = "%" & trim(arguments.searchTerm) & "%";
+        }
+        // If genreId is provided, search by genreId.
+        else if (arguments.genreId > 0) {
+            sql &= " WHERE EXISTS (SELECT 1 FROM genresToBooks gtb WHERE b.isbn13 = gtb.isbn13 AND gtb.genreId = :genreId)";
+            params.genreId = arguments.genreId;
+        }
+    
+        // Execute the query with the parameters.
+        return queryExecute(sql, params);
+    }
+ 
+
+
+    public function allGenres() {
+        // Query to get all genres from the genres table
+        var result = queryExecute("SELECT id, name FROM genres");
+        
+        // Returning the result of the query (it will be a query object with id and name columns)
+        return result;
+    }
+
+    public function allPublishers() {
+        var result = queryExecute("SELECT id, name FROM publishers");
+        
+        // Returning the result of the query (it will be a query object with id and name columns)
+        return result;
+    }
+
+
+
+    public function saveGenreToBook(required numeric genreId, required string isbn13) {
+        queryExecute("
+            INSERT INTO genresToBooks (genreid, isbn13) 
+            VALUES (:genreId, :isbn13)", 
+            {genreId: arguments.genreId, isbn13: arguments.isbn13}
         );
     }
 
-    public query function searchBooks(string title="", string isbn13="") {
-        var sql = "SELECT * FROM books";
-        var params = {};
-        if (len(title) || len(isbn13)) {
-            sql &= " WHERE ";
-            if (len(title)) {
-                sql &= "title LIKE :title";
-                params["title"] = "%" & arguments.title & "%";
-            }
-            if (len(isbn13)) {
-                if (structCount(params)) sql &= " AND ";
-                sql &= "isbn13 = :isbn13";
-                params["isbn13"] = arguments.isbn13;
+
+    public function clearAllBookGenres(required string isbn13) {
+        queryExecute("
+            DELETE FROM genresToBooks 
+            WHERE isbn13 = :isbn13", 
+            {isbn13: arguments.isbn13}
+        );
+    }
+
+
+
+    public function allGenresForBook(required string isbn13, numeric genreId=0) {
+        var ourSQL = "
+            SELECT b.*, g.name AS genreName 
+            FROM books b
+            INNER JOIN genresToBooks gtb ON b.isbn13 = gtb.isbn13
+            INNER JOIN genres g ON gtb.genreId = g.id
+        ";
+
+        // Add conditions based on provided arguments
+        if (arguments.genreId > 0) {
+            // Filter by genre if genreId is provided
+            ourSQL &= " WHERE gtb.genreId = :genreId";
+        }
+
+        if (arguments.isbn13.len() > 0) {
+            // Filter by ISBN13 if it's provided
+            if (arguments.genreId > 0) {
+                // If both genreId and isbn13 are provided, add to the existing WHERE clause
+                ourSQL &= " AND gtb.isbn13 = :isbn13";
+            } else {
+                // If only ISBN13 is provided, add a WHERE clause
+                ourSQL &= " WHERE gtb.isbn13 = :isbn13";
             }
         }
-        return queryExecute(sql, params);
+
+        // Execute the query with parameters
+        return queryExecute(ourSQL, {isbn13: arguments.isbn13, genreId: arguments.genreId});
     }
+
+
+
+
+    public function distinctGenres() {
+        return queryExecute("
+           SELECT DISTINCT g.id, g.name 
+            FROM genresToBooks gtb
+            INNER JOIN genres g ON g.id = gtb.genreid
+            ORDER BY g.name");
+    }
+
+    public function uploadFile(fileField ){
+        return fileUpload(expandPath("/bookstore/common/images/"),"uploadImage","*","makeUnique");
+    }
+ 
+    public function getGenresForBook(isbn13 ){
+        return queryExecute("
+           SELECT  g.id, g.name
+            FROM genresToBooks gtb
+            INNER JOIN genres g ON g.id = gtb.genreId
+            ORDER BY g.name");
+    }
+
+// saveBooks("The Mystery of the Pink Crayfish", "1234567890123", "123-456-789", 2020, 1.2, 250);
+// saveGenreToBook(1, "1234567890123");  // Assign genre with ID 1 to the book with ISBN13 1234567890123
+// var genres = allGenresForBook("1234567890123");
+// var books = searchBooks("Mystery");
+// var genres = distinctGenres();
+// var booksInGenre = allGenresForBook("", 1); // where 1 is a genre ID
+// var specificBookGenres = allGenresForBook("9781234567890", 1); // where 1 is the genre ID and ISBN13 is provided
 }
+

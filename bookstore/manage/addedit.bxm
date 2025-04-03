@@ -1,19 +1,8 @@
 <bx:param name = "book" default=""/>
 <bx:set bookstoreFunctions = createObject("bookstore.common.books")>
 
-<!-- Handle genre assignment -->
-<bx:script>
-if(form.keyExists("genre")){
-    // First, clear existing genres for the book
-    common.clearAllBookGenres(form.isbn13);
 
-    // Convert the list of selected genres into an array and loop through each one
-    form.genre.listToArray().each(function(item){
-        // Save each genre to the book
-        common.saveGenreToBook(item, form.isbn13);
-    });
-}
-</bx:script>
+
 <bx:output> 
 <bx:dump var="#form#"/>
 
@@ -23,8 +12,20 @@ if(form.keyExists("genre")){
         <bx:dump  var="#fileinfo#"/>
         <bx:set form.image = fileInfo.serverFileName />
         </bx:if>
-</bx:if>
-  <bx:set bookstoreFunctions.saveBooks(form.title, form.isbn13, form.isbn, form.year, form.weight, form.pages, form.image, form.publisherId) />
+        <!-- Handle genre assignment -->
+        <bx:script>
+          if(form.keyExists("genre")){
+              // First, clear existing genres for the book
+              bookstoreFunctions.clearAllBookGenres(form.isbn13);
+
+              // Convert the list of selected genres into an array and loop through each one
+              form.genre.listToArray().each(function(item){
+                  // Save each genre to the book
+                  bookstoreFunctions.saveGenreToBook(item, form.isbn13);
+              });
+          }
+        </bx:script>
+    <bx:set bookstoreFunctions.saveBooks(form.title, form.isbn13, form.isbn, form.year, form.weight, form.pages, form.image, form.publisherId, form.description) />
 </bx:if>
 <bx:set allBooks = bookstorefunctions.allBooks() >
 <div class="row">

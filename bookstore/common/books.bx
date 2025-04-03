@@ -1,10 +1,10 @@
 class {
-    public void function saveBooks(required string title, required string isbn13, required string isbn, required year, required weight, required pages, required image, required publisherId, numeric id=0) {
+    public void function saveBooks(required string title, required string isbn13, required string isbn, required year, required weight, required pages, required image, required publisherId, string description="") {
         queryExecute("
-            INSERT INTO books (title, isbn13, isbn, year, weight, pages, image, publisherId) 
-            VALUES (:title, :isbn13, :isbn, :year, :weight, :pages, :image, :publisherId)
-            ON DUPLICATE KEY UPDATE title=:title, isbn13=:isbn13, isbn=:isbn, year=:year, weight=:weight, pages=:pages",
-            {title: arguments.title, isbn13: arguments.isbn13, isbn: arguments.isbn, year: arguments.year, weight: arguments.weight, pages: arguments.pages, image: arguments.image, publisherId: arguments.publisherId}
+            INSERT INTO books (title, isbn13, isbn, year, weight, pages, image, publisherId, description) 
+            VALUES (:title, :isbn13, :isbn, :year, :weight, :pages, :image, :publisherId, :description)
+            ON DUPLICATE KEY UPDATE title=:title, isbn13=:isbn13, isbn=:isbn, year=:year, weight=:weight, pages=:pages, description=:description",
+            {title: arguments.title, isbn13: arguments.isbn13, isbn: arguments.isbn, year: arguments.year, weight: arguments.weight, pages: arguments.pages, image: arguments.image, publisherId: arguments.publisherId, description:arguments.description}
             );
     }    
 

@@ -1,10 +1,10 @@
 class {
-    public void function saveBooks(required string title, required string isbn13, required string isbn, required year, required weight, required pages, required image, required publisher, numeric id=0) {
+    public void function saveBooks(required string title, required string isbn13, required string isbn, required year, required weight, required pages, required image, required publisherId, numeric id=0) {
         queryExecute("
-            INSERT INTO books (title, isbn13, isbn, year, weight, pages, image, publisher) 
-            VALUES (:title, :isbn13, :isbn, :year, :weight, :pages, :image, :publisher)
+            INSERT INTO books (title, isbn13, isbn, year, weight, pages, image, publisherId) 
+            VALUES (:title, :isbn13, :isbn, :year, :weight, :pages, :image, :publisherId)
             ON DUPLICATE KEY UPDATE title=:title, isbn13=:isbn13, isbn=:isbn, year=:year, weight=:weight, pages=:pages",
-            {title: arguments.title, isbn13: arguments.isbn13, isbn: arguments.isbn, year: arguments.year, weight: arguments.weight, pages: arguments.pages, image: arguments.image, publisher: arguments.publisher}
+            {title: arguments.title, isbn13: arguments.isbn13, isbn: arguments.isbn, year: arguments.year, weight: arguments.weight, pages: arguments.pages, image: arguments.image, publisherId: arguments.publisherId}
             );
     }    
 
@@ -125,6 +125,13 @@ class {
             FROM genresToBooks gtb
             INNER JOIN genres g ON g.id = gtb.genreId
             ORDER BY g.name");
+    }
+
+    public function allBooks(){
+        return queryExecute("
+            SELECT * from books
+            ORDER BY title"
+        );
     }
 
 // saveBooks("The Mystery of the Pink Crayfish", "1234567890123", "123-456-789", 2020, 1.2, 250);

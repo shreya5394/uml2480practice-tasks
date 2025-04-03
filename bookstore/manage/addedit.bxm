@@ -1,34 +1,51 @@
 <bx:param name = "book" default=""/>
 <bx:set bookstoreFunctions = createObject("bookstore.common.books")>
 
+<!-- Handle genre assignment -->
+<bx:script>
+if(form.keyExists("genre")){
+    // First, clear existing genres for the book
+    common.clearAllBookGenres(form.isbn13);
 
+    // Convert the list of selected genres into an array and loop through each one
+    form.genre.listToArray().each(function(item){
+        // Save each genre to the book
+        common.saveGenreToBook(item, form.isbn13);
+    });
+}
+</bx:script>
 <bx:output> 
 <bx:dump var="#form#"/>
+
   <bx:if form.keyExists("isbn13")>
-        <bx:if form.keyExists("uploadimage" && form.uploadimage.len())>
+        <bx:if form.keyExists("uploadimage") && form.uploadimage.len()>
         <bx:set fileinfo = bookstoreFunctions.uploadFile("uploadimage")/>
         <bx:dump  var="#fileinfo#"/>
         <bx:set form.image = fileInfo.serverFileName />
         </bx:if>
-  <bx:set bookstoreFunctions.saveBooks(form.title, form.isbn13, form.isbn, form.year, form.weight, form.pages, form.image, form.publisher) />
 </bx:if>
-</bx:output>
-
-<bx:set allPublishers = bookstoreFunctions.allPublishers()>
-
-<bx:set allGenres = bookstoreFunctions.allGenres() />
-<bx:set bookGenres = bookstoreFunctions.allGenresForBook(form.isbn13)/>
-
-
+  <bx:set bookstoreFunctions.saveBooks(form.title, form.isbn13, form.isbn, form.year, form.weight, form.pages, form.image, form.publisherId) />
+</bx:if>
+<bx:set allBooks = bookstorefunctions.allBooks() >
 <div class="row">
     <div class="col-3">
-        Book list
+        Book list <ul class="nav flex-column"> 
+          <li class="nav-item"> 
+            <a class="nav-link" href="#cgi.SCRIPT_NAME#?t=addedit&book=new">
+              New Book
+            </a>
+          </li>
+        </ul>
     </div>
     <div class="col-9">
-        <bx:output>Book list
-        <form action="#cgi.script_name#?tool=addEdit&book=#book#" method="POST" enctype="multipart/form-data" >
-          <input type=”file” name=”uploadimage”>     
-          <input type=”hidden” name=”image” value=”#trim(bookinfo.image[1])#”>
+     Book list
+        <bx:if book.len() gt 0>
+        <bx:set bookinfo = bookstoreFunctions.searchBooks(book)>   
+        <bx:set allPublishers = bookstoreFunctions.allPublishers()>
+        <bx:set allGenres = bookstoreFunctions.allGenres() />
+        <bx:set bookGenres = bookstoreFunctions.allGenresForBook(book)/>
+        <form action="#cgi.script_name#?t=addEdit&book=#book#" method="POST" enctype="multipart/form-data" >  
+          <input type="hidden" name="image" value="#trim(bookinfo.image[1])#">
           <label for="uploadImage">Upload Cover</label>
           <div class="input-group mb-3">    
               <input type="file" id="uploadImage" name="uploadimage" class="form-control" />    
@@ -104,15 +121,14 @@
             <select class="form-select" id="publisher" name="publisherId" aria-label="Publisher Select Control">
                 <option></option> <!--- Empty option for clarity --->
                 <bx:loop query="allPublishers">
-                <option value="#id#" #id == bookinfo.publisher ? "selected" : ""#** >#name#</option>
+                <option value="#id#" #id == bookinfo.publisherid ? "selected" : ""#** >#name#</option>
                 </bx:loop>
             </select>
             <label for="publisher">Publisher</label>
         </div>
 
-
+      <label>Genres</label>
         <div class="form-floating mb-3">
-          <label>Genres</label>
           <div>
               <!-- Loop through all genres and create checkboxes -->
               <bx:loop query="allGenres">
@@ -128,36 +144,31 @@
       </div>             
             <button type="submit" class="btn btn-primary w-100" style="width:100%">Save</button>
             </form>
+          </bx:if>
         </bx:output>
-
-        <bx:if form.keyExists("image")>
-    <!-- Handle the image upload first -->
-    <bx:set fileInfo = common.uploadFile("uploadImage") />
-    <bx:set form.image = fileInfo.serverFileName />
-    
-    <!-- Handle genre assignment -->
-    <bx:script>
-        if(form.keyExists("genre")){
-            // First, clear existing genres for the book
-            common.clearAllBookGenres(form.isbn13);
-
-            // Convert the list of selected genres into an array and loop through each one
-            form.genre.listToArray().each(function(item){
-                // Save each genre to the book
-                common.saveGenreToBook(item, form.isbn13);
-            });
-        }
-    </bx:script>
-</bx:if>
 
     </div>
 </div>
 
-<script>
-  tinymce.init({
-      selector: '#description',
-      plugins: 'advlist autolink lists link charmap print preview anchor',
-      toolbar: 'bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent',
-      menubar: false
-  });
+<script type="text/javascript">
+  const { 
+    ClassicEditor,
+    Essentials,
+    Bold,
+    Italic,
+    Font,
+    Paragraph
+  } = CKEDITOR;
+
+  ClassicEditor
+    .create( document.querySelector( '#description' ), {
+        licenseKey: 'eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3NzI4NDE1OTksImp0aSI6IjUxMWE0ZDdmLWJmOWMtNDM2Ni1iNTEwLTYwMzgxYTZkYWU0MSIsImxpY2Vuc2VkSG9zdHMiOlsiMTI3LjAuMC4xIiwibG9jYWxob3N0IiwiMTkyLjE2OC4qLioiLCIxMC4qLiouKiIsIjE3Mi4qLiouKiIsIioudGVzdCIsIioubG9jYWxob3N0IiwiKi5sb2NhbCJdLCJ1c2FnZUVuZHBvaW50IjoiaHR0cHM6Ly9wcm94eS1ldmVudC5ja2VkaXRvci5jb20iLCJkaXN0cmlidXRpb25DaGFubmVsIjpbImNsb3VkIiwiZHJ1cGFsIl0sImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJmZWF0dXJlcyI6WyJEUlVQIl0sInZjIjoiNjIzOGU0ZjcifQ.WVB5rEYWNC-qmrhTk8hF_tMBbM_gujAQ6gDXjCh-ytRy5HJzJvgLk1fh0insxH_lZzg920fQmKVkj0-dMB4Ltg',
+        plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+        toolbar: [
+            'undo', 'redo', '|', 'bold', 'italic', '|',
+            'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+        ]
+    })
+    .then( /* ... */ )
+    .catch( /* ... */ );
 </script>

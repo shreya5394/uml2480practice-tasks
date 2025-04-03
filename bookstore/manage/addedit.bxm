@@ -9,7 +9,7 @@
   <bx:if form.keyExists("isbn13")>
         <bx:if form.keyExists("uploadimage") && form.uploadimage.len()>
         <bx:set fileinfo = bookstoreFunctions.uploadFile("uploadimage")/>
-        <bx:dump  var="#fileinfo#"/>
+        <bx:dump var="#fileinfo#"/>
         <bx:set form.image = fileInfo.serverFileName />
         </bx:if>
         <!-- Handle genre assignment -->
@@ -36,12 +36,20 @@
               New Book
             </a>
           </li>
+          <bx:output query="allBooks">
+          <li class="nav-item"> 
+            <a class="nav-link" href="#cgi.SCRIPT_NAME#?t=addedit&book=#isbn13#">
+              #title#
+            </a>
+          </li>
+        </bx:output>
         </ul>
     </div>
     <div class="col-9">
      Book list
         <bx:if book.len() gt 0>
-        <bx:set bookinfo = bookstoreFunctions.searchBooks(book)>   
+        <bx:set bookinfo = bookstoreFunctions.searchBooks(book)>
+        <bx:dump var="#bookinfo#">   
         <bx:set allPublishers = bookstoreFunctions.allPublishers()>
         <bx:set allGenres = bookstoreFunctions.allGenres() />
         <bx:set bookGenres = bookstoreFunctions.allGenresForBook(book)/>
@@ -138,9 +146,9 @@
           </div>
 
           <bx:loop query="bookGenres">
-            <bx:script>
+            <script>
                 document.getElementById('genre#genreid#').checked = true;
-            </bx:script>
+            </script>
           </bx:loop>
       </div>             
             <button type="submit" class="btn btn-primary w-100" style="width:100%">Save</button>

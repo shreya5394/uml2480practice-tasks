@@ -36,7 +36,6 @@ class {
         // Execute the query with the parameters.
         return queryExecute(sql, params);
     }
- 
 
 
     public function allGenres() {

@@ -9,6 +9,7 @@ class {
     }    
 
     public query function searchBooks(string searchTerm="", numeric genreId=0) {
+
         var sql = "
             SELECT b.*, p.name AS publisherName, g.name AS genreName, g.id AS genreId
             FROM books b
@@ -21,18 +22,19 @@ class {
     
         // If searchTerm is provided, include it in the query.
         if (arguments.searchTerm.len() > 0) {
-            sql &= " WHERE b.title LIKE :searchTerm 
+            sql &= " WHERE b.title LIKE :likeSearchTerm 
                      OR b.isbn13 = :searchTerm 
                      OR p.id = :searchTerm 
-                     OR p.name LIKE :searchTerm";
-            params.searchTerm = "%" & trim(arguments.searchTerm) & "%";
+                     OR p.name LIKE :likeSearchTerm";
+            params.searchTerm = trim(arguments.searchTerm);
+            params.likeSearchTerm = "%" & trim(arguments.searchTerm) & "%";
         }
         // If genreId is provided, search by genreId.
         else if (arguments.genreId > 0) {
             sql &= " WHERE EXISTS (SELECT 1 FROM genresToBooks gtb WHERE b.isbn13 = gtb.isbn13 AND gtb.genreId = :genreId)";
             params.genreId = arguments.genreId;
         }
-    
+
         // Execute the query with the parameters.
         return queryExecute(sql, params);
     }

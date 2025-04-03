@@ -53,6 +53,7 @@
         <bx:set allPublishers = bookstoreFunctions.allPublishers()>
         <bx:set allGenres = bookstoreFunctions.allGenres() />
         <bx:set bookGenres = bookstoreFunctions.allGenresForBook(book)/>
+        
         <form action="#cgi.script_name#?t=addEdit&book=#book#" method="POST" enctype="multipart/form-data" >  
           <input type="hidden" name="image" value="#trim(bookinfo.image[1])#">
           <label for="uploadImage">Upload Cover</label>
